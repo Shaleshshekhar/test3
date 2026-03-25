@@ -1,4 +1,25 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AR Illustrations</title><meta itemprop="name" content="AR Illustrations"><meta name="twitter:title" content="AR Illustrations"><meta property="og:title" content="AR Illustrations"><meta property="og:site_name" content="AR Illustrations"><meta name="description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world."><meta itemprop="description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world."><meta property="og:description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world."><meta name="twitter:description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world."><script crossorigin="anonymous" src="./external/runtime/runtime.js"></script><script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"></script><style>html,
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AR Illustrations</title>
+  <meta itemprop="name" content="AR Illustrations">
+  <meta name="twitter:title" content="AR Illustrations">
+  <meta property="og:title" content="AR Illustrations">
+  <meta property="og:site_name" content="AR Illustrations">
+  <meta name="description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world.">
+  <meta itemprop="description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world.">
+  <meta property="og:description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world.">
+  <meta name="twitter:description" content="This project demonstrates how to use Image Targets to anchor virtual content to images in the real world.">
+  <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
+  <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam">
+  </script>
+
+  <style>
+    html,
     body {
       margin: 0;
       width: 100%;
@@ -61,4 +82,23 @@
       font-size: 16px;
       font-weight: 700;
       border: 2px solid rgba(255, 255, 255, 0.15);
-    }</style></head><body><script src="bundle.js"></script><div id="start-overlay"><h2>AR Illustrations</h2><p>This experience requires camera access.</p><button id="start-button">Start Experience</button></div><canvas id="xr-canvas"></canvas><div id="target-status">Waiting to start...</div></body></html>
+    }
+  </style>
+</head>
+
+<body>
+<script src="bundle.js"></script>
+
+  <div id="start-overlay">
+    <h2>AR Illustrations</h2>
+    <p>This experience requires camera access.</p>
+    <button id="start-button">Start Experience</button>
+  </div>
+
+  <canvas id="xr-canvas"></canvas>
+
+  <div id="target-status">Waiting to start...</div>
+
+</body>
+
+</html>
