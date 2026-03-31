@@ -1,4 +1,33 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AR Illustrations</title><link rel="icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png"><link rel="manifest" href="./assets/site.webmanifest"><meta name="theme-color" content="#D89A5B"><script crossorigin="anonymous" src="./external/runtime/runtime.js"></script><script crossorigin="anonymous" src="./external/xr/xr.js" async data-preload-chunks="slam"></script><style>html, body {
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AR Illustrations</title>
+  <meta itemprop="name" content="AR Illustrations">
+  <meta name="twitter:title" content="AR Illustrations">
+  <meta property="og:title" content="AR Illustrations">
+  <meta property="og:site_name" content="AR Illustrations">
+  <meta name="description" content="Bring your illustrations to life with immersive augmented reality experiences.">
+  <meta itemprop="description" content="Bring your illustrations to life with immersive augmented reality experiences.">
+  <meta property="og:description" content="Bring your illustrations to life with immersive augmented reality experiences.">
+  <meta name="twitter:description" content="Bring your illustrations to life with immersive augmented reality experiences.">
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+  <link rel="manifest" href="./assets/site.webmanifest">
+  <meta name="theme-color" content="#D89A5B">
+
+  <!-- XR -->
+  <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
+  <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"></script>
+
+<style>
+html, body {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -17,6 +46,7 @@
   align-items: center;
   background: #F6E3C5;
   overflow: hidden;
+  pointer-events: none;
 }
 
 /* Gradient */
@@ -24,6 +54,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 #gradient-bg svg {
@@ -65,6 +96,7 @@
   backdrop-filter: blur(80px);
   background: rgba(255,255,255,0.08);
   z-index: 1;
+  pointer-events: none;
 }
 
 /* ===== CONTENT ===== */
@@ -82,6 +114,7 @@
 
   padding: 40px 20px 40px;
   box-sizing: border-box;
+  pointer-events: auto;
 }
 
 /* Center group (keeps ratio safe) */
@@ -122,6 +155,7 @@
   cursor: pointer;
 
   flex-shrink: 0;
+  pointer-events: auto;
 }
 
 /* Flash */
@@ -146,30 +180,108 @@
   height: 100%;
   z-index: 1;
   pointer-events: none !important;
-}</style></head><body><script src="bundle.js"></script><div id="start-overlay"><div id="gradient-bg"><svg viewBox="0 0 800 800"><defs><filter id="blur"><feGaussianBlur stdDeviation="80"/></filter><radialGradient id="g1"><stop offset="0%" stop-color="#FFD27A"/><stop offset="100%" stop-color="#E6A85C"/></radialGradient><radialGradient id="g2"><stop offset="0%" stop-color="#F6C28B"/><stop offset="100%" stop-color="#D89A5B"/></radialGradient><radialGradient id="g3"><stop offset="0%" stop-color="#FFE0A3"/><stop offset="100%" stop-color="#C97A3D"/></radialGradient></defs><g filter="url(#blur)"><path class="shape shape1" fill="url(#g1)" d="M300,200 C400,100 600,150 650,300 C700,450 550,600 400,650 C250,700 150,550 150,400 Z"/><path class="shape shape2" fill="url(#g2)" d="M500,100 C650,150 750,300 700,450 C650,600 500,700 350,650 C200,600 150,450 200,300 Z"/><path class="shape shape3" fill="url(#g3)" d="M200,300 C250,200 400,150 500,250 C600,350 550,500 400,550 C250,600 150,500 150,400 Z"/></g></svg></div><div id="glass-layer"></div><div id="content"><div id="visual-group"><img id="splash-art" src="./assets/splash-art.png"> <img id="signature" src="./assets/signature.png"></div><button id="start-button">Start AR</button></div><div id="flash"></div></div><canvas id="xr-canvas"></canvas><script>window.addEventListener("load", () => {
+}
+</style>
+</head>
 
-  const button = document.getElementById("start-button");
-  const overlay = document.getElementById("start-overlay");
-  const flash = document.getElementById("flash");
+<body>
 
-  button.onclick = async function () {
+<script src="bundle.js"></script>
 
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      await ctx.resume();
-    } catch(e){}
+<div id="start-overlay">
 
-    try {
-      if (window.XR8 && XR8.XrController) {
-        XR8.XrController.resume();
-      }
-    } catch(e){}
+  <div id="gradient-bg">
+    <svg viewBox="0 0 800 800">
+      <defs>
+        <filter id="blur">
+          <feGaussianBlur stdDeviation="80"/>
+        </filter>
 
-    flash.classList.add("active");
+        <radialGradient id="g1">
+          <stop offset="0%" stop-color="#FFD27A"/>
+          <stop offset="100%" stop-color="#E6A85C"/>
+        </radialGradient>
 
-    setTimeout(() => overlay.style.opacity = "0", 300);
-    setTimeout(() => overlay.remove(), 900);
+        <radialGradient id="g2">
+          <stop offset="0%" stop-color="#F6C28B"/>
+          <stop offset="100%" stop-color="#D89A5B"/>
+        </radialGradient>
 
-  };
+        <radialGradient id="g3">
+          <stop offset="0%" stop-color="#FFE0A3"/>
+          <stop offset="100%" stop-color="#C97A3D"/>
+        </radialGradient>
+      </defs>
 
-});</script></body></html>
+      <g filter="url(#blur)">
+        <path class="shape shape1" fill="url(#g1)"
+          d="M300,200 C400,100 600,150 650,300 C700,450 550,600 400,650 C250,700 150,550 150,400 Z"/>
+        <path class="shape shape2" fill="url(#g2)"
+          d="M500,100 C650,150 750,300 700,450 C650,600 500,700 350,650 C200,600 150,450 200,300 Z"/>
+        <path class="shape shape3" fill="url(#g3)"
+          d="M200,300 C250,200 400,150 500,250 C600,350 550,500 400,550 C250,600 150,500 150,400 Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="glass-layer"></div>
+
+  <div id="content">
+
+    <div id="visual-group">
+      <img id="splash-art" src="./assets/splash-art.png">
+      <img id="signature" src="./assets/signature.png">
+    </div>
+
+    <button id="start-button">Start AR</button>
+
+  </div>
+
+  <div id="flash"></div>
+
+</div>
+
+<canvas id="xr-canvas"></canvas>
+
+
+  <script>
+    window.addEventListener("load", () => {
+
+      const button = document.getElementById("start-button");
+      const overlay = document.getElementById("start-overlay");
+      const flash = document.getElementById("flash");
+
+      button.onclick = async function () {
+
+        console.log("CLICK WORKING");
+
+        // unlock audio
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          await ctx.resume();
+        } catch(e){}
+
+        // resume XR
+        try {
+          if (window.XR8 && XR8.XrController) {
+            XR8.XrController.resume();
+          }
+        } catch(e){}
+
+        // visual transition
+        flash.classList.add("active");
+
+        setTimeout(() => {
+          overlay.style.opacity = "0";
+        }, 300);
+
+        setTimeout(() => {
+          overlay.remove();
+        }, 900);
+
+      };
+
+    });
+  </script>
+</body>
+</html>
