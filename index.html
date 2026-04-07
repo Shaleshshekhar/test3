@@ -7,7 +7,6 @@
 
 <title>AR Illustrations</title>
 
-<!-- Favicon -->
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
@@ -15,7 +14,6 @@
 <link rel="manifest" href="./assets/site.webmanifest">
 <meta name="theme-color" content="#D89A5B">
 
-<!-- XR -->
 <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
 <script crossorigin="anonymous" src="./external/xr/xr.js" async data-preload-chunks="slam"></script>
 
@@ -129,38 +127,55 @@ html, body {
   max-width: 256px;
 }
 
-/* ===== LOADING TEXT ===== */
-
-#loading-text {
-  font-size: 14px;
-  color: #6b4a2f;
-  margin-bottom: 10px;
-  text-align: center;
-  transition: opacity 0.3s ease;
-}
-
 /* ===== BUTTON ===== */
 
 #start-button {
+  position: relative;
   padding: 16px 36px;
   font-size: 18px;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  flex-shrink: 0;
+  overflow: hidden;
 
-  /* Disabled state */
   background: #b5a89a;
-  color: #ffffff;
+  color: #fff;
   pointer-events: none;
 
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
-/* Active state */
+/* shimmer */
+#start-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* READY */
 #start-button.active {
   background: linear-gradient(135deg, #E6A85C, #C97A3D);
   pointer-events: auto;
+  animation: glow 1.5s infinite alternate;
+}
+
+#start-button.active::before {
+  display: none;
+}
+
+/* glow */
+@keyframes glow {
+  from { box-shadow: 0 0 10px rgba(230,168,92,0.3); }
+  to   { box-shadow: 0 0 20px rgba(230,168,92,0.6); }
 }
 
 /* Flash */
@@ -232,10 +247,7 @@ html, body {
       <img id="signature" src="./assets/signature.png">
     </div>
 
-    <!-- Loading text -->
-    <div id="loading-text">Preparing experience...</div>
-
-    <button id="start-button">Start AR</button>
+    <button id="start-button">Loading AR…</button>
 
   </div>
 
@@ -251,21 +263,60 @@ window.addEventListener("load", () => {
   const button = document.getElementById("start-button");
   const overlay = document.getElementById("start-overlay");
   const flash = document.getElementById("flash");
-  const loadingText = document.getElementById("loading-text");
 
-  const enableButton = () => {
-    button.classList.add("active");
-    loadingText.textContent = "Ready to start";
+  let xrReady = false;
+  let videoReady = false;
+
+  // animated dots
+  let dots = 0;
+  setInterval(() => {
+    if (button.classList.contains("active")) return;
+    dots = (dots + 1) % 4;
+    button.textContent = "Loading AR" + ".".repeat(dots);
+  }, 400);
+
+  const checkReady = () => {
+    if (xrReady && videoReady) {
+      button.classList.add("active");
+      button.textContent = "Start AR";
+    }
   };
 
-  // XR already loaded
-  if (window.XR8) {
-    enableButton();
-  }
+  // XR ready
+  const onXRReady = () => {
+    xrReady = true;
+    checkReady();
+  };
 
-  // XR loads later
-  window.addEventListener("xrloaded", enableButton);
+  if (window.XR8) onXRReady();
+  else window.addEventListener("xrloaded", onXRReady);
 
+  // video ready
+  const waitForVideo = () => {
+    const videos = document.querySelectorAll("video");
+
+    if (videos.length === 0) {
+      setTimeout(waitForVideo, 300);
+      return;
+    }
+
+    const firstVideo = videos[0];
+
+    if (firstVideo.readyState >= 2) {
+      videoReady = true;
+      checkReady();
+      return;
+    }
+
+    firstVideo.addEventListener("loadeddata", () => {
+      videoReady = true;
+      checkReady();
+    }, { once: true });
+  };
+
+  waitForVideo();
+
+  // click
   button.onclick = async function () {
 
     if (!button.classList.contains("active")) return;
