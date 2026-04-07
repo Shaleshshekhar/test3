@@ -129,26 +129,38 @@ html, body {
   max-width: 256px;
 }
 
-/* BUTTON STATES */
+/* ===== LOADING TEXT ===== */
+
+#loading-text {
+  font-size: 14px;
+  color: #6b4a2f;
+  margin-bottom: 10px;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+/* ===== BUTTON ===== */
 
 #start-button {
-  margin-top: 20px;
   padding: 16px 36px;
   font-size: 18px;
-  background: linear-gradient(135deg, #E6A85C, #C97A3D);
-  color: #fff;
   border: none;
   border-radius: 999px;
   cursor: pointer;
   flex-shrink: 0;
+
+  /* Disabled state */
+  background: #b5a89a;
+  color: #ffffff;
   pointer-events: none;
-  opacity: 0.5;
+
   transition: all 0.3s ease;
 }
 
+/* Active state */
 #start-button.active {
+  background: linear-gradient(135deg, #E6A85C, #C97A3D);
   pointer-events: auto;
-  opacity: 1;
 }
 
 /* Flash */
@@ -214,12 +226,17 @@ html, body {
   <div id="glass-layer"></div>
 
   <div id="content">
+
     <div id="visual-group">
       <img id="splash-art" src="./assets/splash-art.png">
       <img id="signature" src="./assets/signature.png">
     </div>
 
+    <!-- Loading text -->
+    <div id="loading-text">Preparing experience...</div>
+
     <button id="start-button">Start AR</button>
+
   </div>
 
   <div id="flash"></div>
@@ -234,21 +251,21 @@ window.addEventListener("load", () => {
   const button = document.getElementById("start-button");
   const overlay = document.getElementById("start-overlay");
   const flash = document.getElementById("flash");
+  const loadingText = document.getElementById("loading-text");
 
-  // ✅ ENABLE BUTTON WHEN XR READY
   const enableButton = () => {
     button.classList.add("active");
+    loadingText.textContent = "Ready to start";
   };
 
-  // Case 1: XR already loaded
+  // XR already loaded
   if (window.XR8) {
     enableButton();
   }
 
-  // Case 2: XR loads later
+  // XR loads later
   window.addEventListener("xrloaded", enableButton);
 
-  // CLICK
   button.onclick = async function () {
 
     if (!button.classList.contains("active")) return;
