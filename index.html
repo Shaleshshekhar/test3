@@ -85,6 +85,7 @@ html, body {
     rgba(255,255,255,0.05)
   );
   border: 1px solid rgba(255,255,255,0.2);
+  pointer-events: none;
 }
 
 /* ===== CONTENT ===== */
@@ -113,8 +114,6 @@ html, body {
   justify-content: center;
 }
 
-/* FLOAT */
-
 @keyframes float {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
@@ -141,27 +140,53 @@ html, body {
   border-radius: 999px;
   border: none;
   cursor: pointer;
+
   background: #b5a89a;
   color: #fff;
+
   display: flex;
   align-items: center;
   gap: 6px;
+
   pointer-events: none;
   transition: all 0.4s ease;
+
+  /* FIX */
+  overflow: hidden;
+  isolation: isolate;
 }
 
-/* shimmer */
+/* shimmer FIXED */
 #start-button::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
-  transform: translateX(-100%);
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.35),
+    transparent
+  );
+
+  transform: skewX(-20deg);
   animation: shimmer 2s infinite;
+
+  z-index: 0;
 }
 
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+/* text above shimmer */
+#start-button span {
+  position: relative;
+  z-index: 1;
 }
 
 /* READY */
@@ -204,17 +229,6 @@ html, body {
   40% { opacity: 1; transform: translateY(-3px); }
 }
 
-/* ===== ENTRANCE ===== */
-
-#content {
-  animation: fadeUp 1s ease forwards;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* XR */
 
 #xr-canvas {
@@ -232,7 +246,7 @@ html, body {
 <div id="start-overlay">
 
   <div id="gradient-bg">
-    <!-- same svg -->
+    <!-- your svg -->
   </div>
 
   <div id="light-sweep"></div>
@@ -264,7 +278,6 @@ window.addEventListener("load", () => {
 
   const button = document.getElementById("start-button");
   const btnText = document.getElementById("btn-text");
-  const overlay = document.getElementById("start-overlay");
 
   let xrReady = false;
   let videoReady = false;
@@ -276,14 +289,11 @@ window.addEventListener("load", () => {
     }
   };
 
-  if (window.XR8) {
+  if (window.XR8) xrReady = true;
+  else window.addEventListener("xrloaded", () => {
     xrReady = true;
-  } else {
-    window.addEventListener("xrloaded", () => {
-      xrReady = true;
-      checkReady();
-    });
-  }
+    checkReady();
+  });
 
   const waitForVideo = () => {
     const videos = document.querySelectorAll("video");
@@ -308,22 +318,6 @@ window.addEventListener("load", () => {
   };
 
   waitForVideo();
-
-  button.onclick = async () => {
-    if (!button.classList.contains("active")) return;
-
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      await ctx.resume();
-    } catch(e){}
-
-    try {
-      XR8?.XrController?.resume();
-    } catch(e){}
-
-    document.body.style.transition = "opacity 0.5s";
-    document.body.style.opacity = 0;
-  };
 
 });
 </script>
