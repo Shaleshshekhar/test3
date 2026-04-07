@@ -39,7 +39,6 @@ html, body {
 #gradient-bg {
   position: absolute;
   inset: 0;
-  z-index: 0;
 }
 
 #gradient-bg svg {
@@ -103,8 +102,6 @@ html, body {
   box-sizing: border-box;
 }
 
-/* ===== VISUAL ===== */
-
 #visual-group {
   display: flex;
   flex-direction: column;
@@ -151,12 +148,11 @@ html, body {
   pointer-events: none;
   transition: all 0.4s ease;
 
-  /* FIX */
   overflow: hidden;
   isolation: isolate;
 }
 
-/* shimmer FIXED */
+/* shimmer */
 #start-button::before {
   content: "";
   position: absolute;
@@ -164,18 +160,14 @@ html, body {
   left: -150%;
   width: 150%;
   height: 100%;
-
   background: linear-gradient(
     120deg,
     transparent,
     rgba(255,255,255,0.35),
     transparent
   );
-
   transform: skewX(-20deg);
   animation: shimmer 2s infinite;
-
-  z-index: 0;
 }
 
 @keyframes shimmer {
@@ -183,7 +175,6 @@ html, body {
   100% { left: 150%; }
 }
 
-/* text above shimmer */
 #start-button span {
   position: relative;
   z-index: 1;
@@ -201,13 +192,9 @@ html, body {
   display: none;
 }
 
-/* PRESS */
-
 #start-button:active {
   transform: scale(0.96);
 }
-
-/* glow */
 
 @keyframes glow {
   from { box-shadow: 0 0 10px rgba(230,168,92,0.3); }
@@ -245,10 +232,7 @@ html, body {
 
 <div id="start-overlay">
 
-  <div id="gradient-bg">
-    <!-- your svg -->
-  </div>
-
+  <div id="gradient-bg"></div>
   <div id="light-sweep"></div>
   <div id="noise"></div>
   <div id="glass-layer"></div>
@@ -286,6 +270,9 @@ window.addEventListener("load", () => {
     if (xrReady && videoReady) {
       button.classList.add("active");
       btnText.textContent = "Start AR";
+
+      // ✅ REMOVE DOTS COMPLETELY
+      document.querySelectorAll(".dot").forEach(el => el.remove());
     }
   };
 
