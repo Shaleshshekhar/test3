@@ -31,14 +31,14 @@ html, body {
   justify-content: center;
   align-items: center;
   background: #F6E3C5;
+  overflow: hidden;
 }
 
-/* ===== BACKGROUND ===== */
+/* ===== GRADIENT ===== */
 
-#gradient-bg, #light-sweep, #noise, #glass-layer {
+#gradient-bg {
   position: absolute;
   inset: 0;
-  pointer-events: none;
 }
 
 #gradient-bg svg {
@@ -49,29 +49,42 @@ html, body {
 /* ===== LIGHT SWEEP ===== */
 
 #light-sweep {
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
-  animation: sweep 10s linear infinite;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: sweep 8s infinite linear;
+  pointer-events: none;
 }
 
 @keyframes sweep {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* ===== NOISE ===== */
 
 #noise {
-  background-image: url('./assets/noise.jpg');
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/noise.png');
   opacity: 0.05;
   mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
 /* ===== GLASS ===== */
 
 #glass-layer {
-  backdrop-filter: blur(60px);
-  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05));
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(80px);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05)
+  );
   border: 1px solid rgba(255,255,255,0.2);
+  pointer-events: none;
 }
 
 /* ===== CONTENT ===== */
@@ -87,7 +100,6 @@ html, body {
   width: 100%;
   padding: 40px 20px;
   box-sizing: border-box;
-  pointer-events: auto;
 }
 
 #visual-group {
@@ -99,11 +111,9 @@ html, body {
   justify-content: center;
 }
 
-/* FLOAT */
-
 @keyframes float {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-8px); }
 }
 
 #splash-art {
@@ -143,7 +153,6 @@ html, body {
 }
 
 /* shimmer */
-
 #start-button::before {
   content: "";
   position: absolute;
@@ -151,14 +160,19 @@ html, body {
   left: -150%;
   width: 150%;
   height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.35),
+    transparent
+  );
   transform: skewX(-20deg);
   animation: shimmer 2s infinite;
 }
 
 @keyframes shimmer {
-  from { left: -150%; }
-  to { left: 150%; }
+  0% { left: -150%; }
+  100% { left: 150%; }
 }
 
 #start-button span {
@@ -218,24 +232,7 @@ html, body {
 
 <div id="start-overlay">
 
-  <!-- GRADIENT SVG RESTORED -->
-  <div id="gradient-bg">
-    <svg viewBox="0 0 800 800">
-      <defs>
-        <filter id="blur">
-          <feGaussianBlur stdDeviation="80"/>
-        </filter>
-        <radialGradient id="g1">
-          <stop offset="0%" stop-color="#FFD27A"/>
-          <stop offset="100%" stop-color="#E6A85C"/>
-        </radialGradient>
-      </defs>
-      <g filter="url(#blur)">
-        <circle cx="400" cy="400" r="300" fill="url(#g1)"/>
-      </g>
-    </svg>
-  </div>
-
+  <div id="gradient-bg"></div>
   <div id="light-sweep"></div>
   <div id="noise"></div>
   <div id="glass-layer"></div>
@@ -273,22 +270,18 @@ window.addEventListener("load", () => {
     if (xrReady && videoReady) {
       button.classList.add("active");
       btnText.textContent = "Start AR";
+
+      // ✅ REMOVE DOTS COMPLETELY
       document.querySelectorAll(".dot").forEach(el => el.remove());
     }
   };
 
-  // XR READY
-  if (window.XR8) {
+  if (window.XR8) xrReady = true;
+  else window.addEventListener("xrloaded", () => {
     xrReady = true;
     checkReady();
-  } else {
-    window.addEventListener("xrloaded", () => {
-      xrReady = true;
-      checkReady();
-    });
-  }
+  });
 
-  // VIDEO READY
   const waitForVideo = () => {
     const videos = document.querySelectorAll("video");
 
@@ -312,25 +305,6 @@ window.addEventListener("load", () => {
   };
 
   waitForVideo();
-
-  // CLICK → START AR
-  button.onclick = async () => {
-    if (!button.classList.contains("active")) return;
-
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      await ctx.resume();
-    } catch(e){}
-
-    try {
-      XR8?.XrController?.resume();
-    } catch(e){}
-
-    document.getElementById("start-overlay").style.opacity = 0;
-    setTimeout(() => {
-      document.getElementById("start-overlay").remove();
-    }, 600);
-  };
 
 });
 </script>
